@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4 сурет — 1 сөз | AI & Telecom</title>
+<style>
+:root{--bg:#031222;--panel:#081f37;--line:#21c7ff;--text:#f5fbff;--muted:#9cc7df;--ok:#35d69b;--bad:#ff6680}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 80% 10%,#154c7b 0,transparent 30%),linear-gradient(145deg,#020a13,#06192c 55%,#082a47)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(#22c8ff33 1px,transparent 1px),linear-gradient(90deg,#22c8ff33 1px,transparent 1px);background-size:42px 42px}
+.wrap{width:min(1040px,94%);margin:auto;padding:28px 0 42px}.head{text-align:center}.tag{color:#55dbff;font-size:12px;font-weight:900;letter-spacing:.18em}.head h1{font-size:clamp(32px,6vw,62px);margin:7px 0}.head h1 span{color:#45d2ff}.head p{color:var(--muted);margin:0 auto 20px}
+.status{display:flex;justify-content:space-between;gap:12px;margin:15px 0}.pill{background:#08233d;border:1px solid #23658a;border-radius:12px;padding:9px 13px;font-weight:800}
+.card{background:#071d33e8;border:1px solid #22729c;border-radius:24px;padding:22px;box-shadow:inset 0 0 40px #0b3d5d55}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:650px;margin:auto}.pic{min-height:150px;border-radius:18px;border:1px solid #27769e;background:linear-gradient(145deg,#0c3456,#091b31);display:grid;place-items:center;text-align:center;padding:16px}.emoji{font-size:clamp(48px,9vw,84px)}.cap{color:#bdeaff;font-size:13px;font-weight:700;margin-top:6px}
+.answer{margin:20px auto 0;max-width:650px}.hint{text-align:center;color:#a9d8ef;margin-bottom:12px}.slots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.slot{width:42px;height:49px;border:2px solid #2c87b4;border-radius:9px;background:#06182a;color:#fff;text-align:center;text-transform:uppercase;font-size:25px;font-weight:900;outline:none}.slot:focus{border-color:#57ddff;box-shadow:0 0 0 3px #20c7ff33}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:17px}button{min-height:45px;border-radius:12px;padding:0 18px;font-weight:900;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,#12a9e7,#3b67e8);color:white}.secondary{border:1px solid #2c7398;background:#0a2946;color:white}
+.msg{text-align:center;min-height:28px;font-weight:900;margin-top:14px}.good{color:var(--ok)}.bad{color:var(--bad)}
+.finish{text-align:center;padding:35px 15px}.finish .big{font-size:70px}.finish h2{font-size:38px;margin:8px}.hide{display:none}
+@media(max-width:560px){.pic{min-height:120px}.card{padding:14px}.slot{width:34px;height:42px;font-size:21px}.status{font-size:13px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="head"><div class="tag">AI • TELECOM • ИНТЕРАКТИВТІ ОЙЫН</div><h1>4 СУРЕТ — <span>1 СӨЗ</span></h1><p>Суреттердің мағынасын байланыстырып, телекоммуникация терминін тап.</p></header>
+<div class="status"><div class="pill" id="level">Деңгей: 1/5</div><div class="pill" id="score">Ұпай: 0</div></div>
+<section class="card" id="game">
+<div class="pics" id="pics"></div>
+<div class="answer"><div class="hint" id="hint"></div><div class="slots" id="slots"></div>
+<div class="actions"><button class="secondary" id="clue">💡 Көмек</button><button class="primary" id="check">✓ Тексеру</button></div><div class="msg" id="msg" aria-live="polite"></div></div>
+</section>
+<section class="card finish hide" id="finish"><div class="big">🏆</div><h2>Ойын аяқталды!</h2><p id="final"></p><button class="primary" id="restart">Қайта ойнау</button></section>
+</main>
+<script>
+const levels=[
+ {word:"ЖЕЛІ",hint:"Құрылғыларды өзара байланыстыратын жүйе",pics:[["📡","Сигнал"],["🌐","Байланыс"],["📱","Құрылғы"],["📶","Сымсыз байланыс"]]},
+ {word:"РОУТЕР",hint:"Деректерге бағыт таңдайтын желілік құрылғы",pics:[["📦","Деректер пакеті"],["➡️","Бағыт"],["🌐","Желі"],["📶","Байланыс"]]},
+ {word:"СЕРВЕР",hint:"Желідегі қызметтер мен деректерді ұсынатын жүйе",pics:[["🗄️","Деректер"],["💻","Есептеу"],["☁️","Қызмет"],["🌐","Қосылу"]]},
+ {word:"ҚАУІПСІЗДІК",hint:"Желіні шабуылдар мен қауіптерден қорғау",pics:[["🔐","Қорғау"],["🛡️","Қалқан"],["🌐","Желі"],["⚠️","Қауіп"]]},
+ {word:"АВТОМАТТАНДЫРУ",hint:"AI көмегімен процесті адамның тұрақты қатысуынсыз орындау",pics:[["🤖","AI"],["⚙️","Процесс"],["📊","Талдау"],["🔁","Автоматты әрекет"]]}
+];
+let n=0,score=0,helped=false;
+const pics=document.getElementById("pics"),slots=document.getElementById("slots"),hint=document.getElementById("hint"),msg=document.getElementById("msg");
+function render(){
+ const L=levels[n]; helped=false; msg.textContent=""; msg.className="msg"; document.getElementById("level").textContent=`Деңгей: ${n+1}/${levels.length}`;
+ pics.innerHTML=""; L.pics.forEach(([e,c])=>{let d=document.createElement("div");d.className="pic";d.innerHTML=`<div><div class="emoji">${e}</div><div class="cap">${c}</div></div>`;pics.appendChild(d)});
+ hint.textContent="Кеңес: "+L.hint;slots.innerHTML="";
+ [...L.word].forEach((ch,i)=>{let inp=document.createElement("input");inp.className="slot";inp.maxLength=1;inp.dataset.i=i;if(ch===" "){inp.value=" ";inp.disabled=true}else{inp.addEventListener("input",()=>{inp.value=inp.value.toUpperCase();let nx=slots.querySelector(`[data-i="${i+1}"]`);if(inp.value&&nx)nx.focus()});inp.addEventListener("keydown",e=>{if(e.key==="Backspace"&&!inp.value&&i>0){let p=slots.querySelector(`[data-i="${i-1}"]`);if(p){p.value="";p.focus()}}})}slots.appendChild(inp)});
+ slots.querySelector("input:not(:disabled)")?.focus();
+}
+function typed(){return [...slots.querySelectorAll("input")].map(i=>i.value).join("").toUpperCase()}
+document.getElementById("clue").onclick=()=>{if(helped)return;helped=true;let L=levels[n],inputs=[...slots.querySelectorAll("input")],idx=inputs.findIndex((x,i)=>!x.disabled&&x.value!==L.word[i]);if(idx>=0)inputs[idx].value=L.word[idx];msg.textContent="💡 Бір әріп ашылды";msg.className="msg"};
+document.getElementById("check").onclick=()=>{let L=levels[n];if(typed()===L.word){score+=helped?15:20;document.getElementById("score").textContent="Ұпай: "+score;msg.textContent="✓ Дұрыс! Келесі деңгей...";msg.className="msg good";setTimeout(()=>{n++;if(n<levels.length)render();else end()},800)}else{msg.textContent="✕ Әзірге дұрыс емес. Тағы ойланып көр!";msg.className="msg bad"}};
+function end(){document.getElementById("game").classList.add("hide");document.getElementById("finish").classList.remove("hide");document.getElementById("final").innerHTML=`Нәтиже: <b>${score} / 100 ұпай</b><br>${score>=85?"AI & Telecom шебері! 🚀":score>=60?"Жақсы нәтиже! 👏":"Тағы бір рет байқап көр! 💡"}`}
+document.getElementById("restart").onclick=()=>{n=0;score=0;document.getElementById("score").textContent="Ұпай: 0";document.getElementById("finish").classList.add("hide");document.getElementById("game").classList.remove("hide");render()};render();
+</script></body></html>
